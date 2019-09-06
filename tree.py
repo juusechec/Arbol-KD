@@ -22,7 +22,7 @@ class Node: pass
 axisArray = []
 medianArray = []
 
-def kdtree(pointList, depth=0, condition='root'):
+def kdtree(pointList, depth=0):
     if not pointList:
         return
 
@@ -48,13 +48,13 @@ def kdtree(pointList, depth=0, condition='root'):
     # Create node and construct subtrees
     tempDepth = depth
     node = Node()
-    node.condition = condition
+    node.condition = 'L' + str(tempDepth) + ' X' + str(axis) + '<=' + str(median)
     node.location = pointList[median]
     # node.leftChild = kdtree(pointList[0:median], depth + 1, 'Left L' + str(tempDepth) + ' X' + str(axis) + '<' + str(median))
     # node.rightChild = kdtree(pointList[median + 1:], depth + 1, 'Right L' + str(tempDepth) + ' X' + str(axis) + '>' + str(median))
-    newCondition = condition + 'L' + str(tempDepth) + ' X' + str(axis) + '<' + str(median)
-    node.leftChild = kdtree(pointList[0:median], depth + 1, newCondition)
-    node.rightChild = kdtree(pointList[median + 1:], depth + 1, newCondition)
+    # newCondition = 
+    node.leftChild = kdtree(pointList[0:median], depth + 1)
+    node.rightChild = kdtree(pointList[median + 1:], depth + 1)
     return node
 
 aux = df.values.tolist()
@@ -87,15 +87,16 @@ def printTree(tree, depth=0, id='root'):
             # print('depth', depth, 'tree', tree.location, tree.leftChild, tree.rightChild)
             idLeft = id + 'L'
             idRight = id + 'R'
-            if depth <= 5:
+            maxDepth = 3
+            if depth <= maxDepth:
                 if id == 'root':
                     u1.node(id, label=getShortName(tree.condition))
                 if hasattr(tree.leftChild, 'condition'):
                     u1.node(idLeft, label=getShortName(tree.leftChild.condition))
-                    u1.edge(id, idLeft, label='left')
+                    u1.edge(id, idLeft, label='left(yes)')
                 if hasattr(tree.rightChild, 'condition'):
                     u1.node(idRight, label=getShortName(tree.rightChild.condition))
-                    u1.edge(id, idRight, label='right')
+                    u1.edge(id, idRight, label='right(no)')
             printTree(tree.leftChild, depth + 1, idLeft)
             printTree(tree.rightChild, depth + 1, idRight)
     else:
