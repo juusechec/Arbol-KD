@@ -1,0 +1,9 @@
+strict digraph example {
+	node [color=lightblue2 style=filled]
+	size="126,6"
+	1 [label=padre]
+	2 [label=hijo]
+	1 -> 2
+	3 [label=hijo]
+	1 -> 3
+}
