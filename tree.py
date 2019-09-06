@@ -48,7 +48,9 @@ def kdtree(pointList, depth=0):
     # Create node and construct subtrees
     tempDepth = depth
     node = Node()
-    node.condition = 'L' + str(tempDepth) + ' X' + str(axis) + '<=' + str(median)
+    # node.condition = 'L' + str(tempDepth) + ' X' + str(axis) + '<=' + str(median)
+    medianValueInAxis = pointList[median][axis]
+    node.condition = 'L' + str(tempDepth) + ' X' + str(axis) + '<=' + str(medianValueInAxis)
     node.location = pointList[median]
     # node.leftChild = kdtree(pointList[0:median], depth + 1, 'Left L' + str(tempDepth) + ' X' + str(axis) + '<' + str(median))
     # node.rightChild = kdtree(pointList[median + 1:], depth + 1, 'Right L' + str(tempDepth) + ' X' + str(axis) + '>' + str(median))
