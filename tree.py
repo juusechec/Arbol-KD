@@ -16,6 +16,7 @@ df = pd.read_excel('./default_of_credit_card_clients.xls')
 df = df.dropna(axis=0, how='any')
 df = df.drop(0)
 del df['Unnamed: 0']
+df.truncate(before=2, after=10)
 
 class Node: pass
 
@@ -64,7 +65,9 @@ aux = df.values.tolist()
 tree = kdtree(aux)
 
 u1 = Digraph('arbol', filename='arbol.gv', strict=True)
-u1.attr(size='126,6')
+# u1.attr(size='20000') # 17654 inch, 1765400 px, 100dpi
+u1.attr(size='20000', dpi='100')
+# u1.attr(size='200', dpi='100')
 u1.node_attr.update(color='lightblue2', style='filled')
 
 def getShortName(fullName):
@@ -75,22 +78,31 @@ def getShortName(fullName):
     else:
         return array[-1]
 
+nodosFinales = []
 ids = []
 def printTree(tree, depth=0, id='root'):
+    maxDepth = 3
+    # condition = depth <= maxDepth # only the firsth depths
+    condition = True # all levels/depth
     ids.append(id)
     # print('depth', depth)
     if tree is not None:
         if hasattr(tree, 'pointList'):
-            #print('tree', dir(tree))
+            # print('tree', dir(tree))
             colY = np.array(tree.pointList)[:,23]
+            nodosFinales.append(id)
             print(('-' * depth) + '>', 'depth', depth, 'colY', colY)
             # u1.edge(dependencia, proceso)
+            if condition:
+                # print('label', 'Y=' + str(colY[0]))
+                idNodoFinal = id + 'Final'
+                u1.node(idNodoFinal, label='Y=' + str(colY[0]))
+                u1.edge(id, idNodoFinal, label='final')
         else:
             # print('depth', depth, 'tree', tree.location, tree.leftChild, tree.rightChild)
             idLeft = id + 'L'
             idRight = id + 'R'
-            maxDepth = 3
-            if depth <= maxDepth:
+            if condition:
                 if id == 'root':
                     u1.node(id, label=getShortName(tree.condition))
                 if hasattr(tree.leftChild, 'condition'):
@@ -107,6 +119,8 @@ def printTree(tree, depth=0, id='root'):
 
 printTree(tree)
 
-print(len(ids))
+print('cantidad elementos:', len(ids))
+print('nodos finales:', len(nodosFinales))
 
+u1.format = 'tiff'
 u1.render()
